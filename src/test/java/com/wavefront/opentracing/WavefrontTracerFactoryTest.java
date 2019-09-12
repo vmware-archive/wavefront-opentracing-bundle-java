@@ -9,11 +9,13 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Properties;
 
 import static com.wavefront.config.WavefrontReportingConfig.directReporting;
 import static com.wavefront.config.WavefrontReportingConfig.proxyReporting;
-import static com.wavefront.opentracing.TracerParameters.APP_TAGS_YAML_FILE_KEY;
-import static com.wavefront.opentracing.TracerParameters.REPORTING_YAML_FILE_KEY;
+import static com.wavefront.opentracing.TracerParameters.APP_TAGS_YAML_FILE;
+import static com.wavefront.opentracing.TracerParameters.REPORTING_YAML_FILE;
+import static com.wavefront.opentracing.Utils.savePropertiesToTempFile;
 import static com.wavefront.opentracing.Utils.saveToTempYamlFile;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -25,8 +27,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class WavefrontTracerFactoryTest {
   private Tracer tracer;
-  private File applicationTagsFile;
-  private File wfReportingConfigFile;
+  private File configurationFile;
+  private File applicationTagsYamlFile;
+  private File wfReportingConfigYamlFile;
 
   @BeforeEach
   public void beforeTest() {
@@ -43,13 +46,17 @@ public class WavefrontTracerFactoryTest {
       ((WavefrontTracer) tracer).close();
       tracer = null;
     }
-    if (applicationTagsFile != null) {
-      applicationTagsFile.delete();
-      applicationTagsFile = null;
+    if (configurationFile != null) {
+      configurationFile.delete();
+      configurationFile = null;
     }
-    if (wfReportingConfigFile != null) {
-      wfReportingConfigFile.delete();
-      wfReportingConfigFile = null;
+    if (applicationTagsYamlFile != null) {
+      applicationTagsYamlFile.delete();
+      applicationTagsYamlFile = null;
+    }
+    if (wfReportingConfigYamlFile != null) {
+      wfReportingConfigYamlFile.delete();
+      wfReportingConfigYamlFile = null;
     }
   }
 
@@ -58,15 +65,15 @@ public class WavefrontTracerFactoryTest {
     ApplicationTagsConfig applicationTagsConfig = new ApplicationTagsConfig();
     applicationTagsConfig.setApplication("test-app");
     applicationTagsConfig.setService("test-service");
-    applicationTagsFile = saveToTempYamlFile(applicationTagsConfig);
-    System.setProperty(APP_TAGS_YAML_FILE_KEY, applicationTagsFile.getAbsolutePath());
+    applicationTagsYamlFile = saveToTempYamlFile(applicationTagsConfig);
+    System.setProperty(APP_TAGS_YAML_FILE, applicationTagsYamlFile.getAbsolutePath());
 
     WavefrontReportingConfig wfReportingConfig = new WavefrontReportingConfig();
     wfReportingConfig.setReportingMechanism(proxyReporting);
     wfReportingConfig.setProxyHost("test-host");
     wfReportingConfig.setProxyMetricsPort(0);
-    wfReportingConfigFile = saveToTempYamlFile(wfReportingConfig);
-    System.setProperty(REPORTING_YAML_FILE_KEY, wfReportingConfigFile.getAbsolutePath());
+    wfReportingConfigYamlFile = saveToTempYamlFile(wfReportingConfig);
+    System.setProperty(REPORTING_YAML_FILE, wfReportingConfigYamlFile.getAbsolutePath());
 
     tracer = new WavefrontTracerFactory().getTracer();
     assertTrue(tracer instanceof WavefrontTracer);
@@ -77,59 +84,106 @@ public class WavefrontTracerFactoryTest {
     ApplicationTagsConfig applicationTagsConfig = new ApplicationTagsConfig();
     applicationTagsConfig.setApplication("test-app");
     applicationTagsConfig.setService("test-service");
-    applicationTagsFile = saveToTempYamlFile(applicationTagsConfig);
-    System.setProperty(APP_TAGS_YAML_FILE_KEY, applicationTagsFile.getAbsolutePath());
+    applicationTagsYamlFile = saveToTempYamlFile(applicationTagsConfig);
+    System.setProperty(APP_TAGS_YAML_FILE, applicationTagsYamlFile.getAbsolutePath());
 
     WavefrontReportingConfig wfReportingConfig = new WavefrontReportingConfig();
     wfReportingConfig.setReportingMechanism(directReporting);
     wfReportingConfig.setServer("test-server");
     wfReportingConfig.setToken("test-token");
-    wfReportingConfigFile = saveToTempYamlFile(wfReportingConfig);
-    System.setProperty(REPORTING_YAML_FILE_KEY, wfReportingConfigFile.getAbsolutePath());
+    wfReportingConfigYamlFile = saveToTempYamlFile(wfReportingConfig);
+    System.setProperty(REPORTING_YAML_FILE, wfReportingConfigYamlFile.getAbsolutePath());
 
     tracer = new WavefrontTracerFactory().getTracer();
     assertTrue(tracer instanceof WavefrontTracer);
   }
 
   @Test
-  public void getTracer_withInvalidReportingConfig() throws IOException {
+  public void getTracer_withNoReportingMechanism() throws IOException {
     ApplicationTagsConfig applicationTagsConfig = new ApplicationTagsConfig();
     applicationTagsConfig.setApplication("test-app");
     applicationTagsConfig.setService("test-service");
-    applicationTagsFile = saveToTempYamlFile(applicationTagsConfig);
-    System.setProperty(APP_TAGS_YAML_FILE_KEY, applicationTagsFile.getAbsolutePath());
+    applicationTagsYamlFile = saveToTempYamlFile(applicationTagsConfig);
+    System.setProperty(APP_TAGS_YAML_FILE, applicationTagsYamlFile.getAbsolutePath());
 
     WavefrontReportingConfig wfReportingConfig = new WavefrontReportingConfig();
-    wfReportingConfig.setReportingMechanism("invalid");
-    wfReportingConfigFile = saveToTempYamlFile(wfReportingConfig);
-    System.setProperty(REPORTING_YAML_FILE_KEY, wfReportingConfigFile.getAbsolutePath());
+    wfReportingConfigYamlFile = saveToTempYamlFile(wfReportingConfig);
+    System.setProperty(REPORTING_YAML_FILE, wfReportingConfigYamlFile.getAbsolutePath());
 
     tracer = new WavefrontTracerFactory().getTracer();
     assertNull(tracer);
   }
 
   @Test
-  public void getTracer_withNoApplicationTags() throws IOException {
+  public void getTracer_withInvalidReportingMechanism() throws IOException {
+    ApplicationTagsConfig applicationTagsConfig = new ApplicationTagsConfig();
+    applicationTagsConfig.setApplication("test-app");
+    applicationTagsConfig.setService("test-service");
+    applicationTagsYamlFile = saveToTempYamlFile(applicationTagsConfig);
+    System.setProperty(APP_TAGS_YAML_FILE, applicationTagsYamlFile.getAbsolutePath());
+
+    WavefrontReportingConfig wfReportingConfig = new WavefrontReportingConfig();
+    wfReportingConfig.setReportingMechanism("invalid");
+    wfReportingConfigYamlFile = saveToTempYamlFile(wfReportingConfig);
+    System.setProperty(REPORTING_YAML_FILE, wfReportingConfigYamlFile.getAbsolutePath());
+
+    tracer = new WavefrontTracerFactory().getTracer();
+    assertNull(tracer);
+  }
+
+  @Test
+  public void getTracer_withInvalidApplicationTagsYamlPath() throws IOException {
+    System.setProperty(APP_TAGS_YAML_FILE, "invalidPath");
+
     WavefrontReportingConfig wfReportingConfig = new WavefrontReportingConfig();
     wfReportingConfig.setReportingMechanism("direct");
     wfReportingConfig.setServer("test-server");
     wfReportingConfig.setToken("test-token");
-    wfReportingConfigFile = saveToTempYamlFile(wfReportingConfig);
-    System.setProperty(REPORTING_YAML_FILE_KEY, wfReportingConfigFile.getAbsolutePath());
+    wfReportingConfigYamlFile = saveToTempYamlFile(wfReportingConfig);
+    System.setProperty(REPORTING_YAML_FILE, wfReportingConfigYamlFile.getAbsolutePath());
 
     tracer = new WavefrontTracerFactory().getTracer();
     assertNull(tracer);
   }
 
   @Test
-  public void getTracer_withNoReportingConfig() throws IOException {
+  public void getTracer_withInvalidReportingConfigYamlPath() throws IOException {
     ApplicationTagsConfig applicationTagsConfig = new ApplicationTagsConfig();
     applicationTagsConfig.setApplication("test-app");
     applicationTagsConfig.setService("test-service");
-    applicationTagsFile = saveToTempYamlFile(applicationTagsConfig);
-    System.setProperty(APP_TAGS_YAML_FILE_KEY, applicationTagsFile.getAbsolutePath());
+    applicationTagsYamlFile = saveToTempYamlFile(applicationTagsConfig);
+    System.setProperty(APP_TAGS_YAML_FILE, applicationTagsYamlFile.getAbsolutePath());
+
+    System.setProperty(REPORTING_YAML_FILE, "invalidPath");
 
     tracer = new WavefrontTracerFactory().getTracer();
     assertNull(tracer);
+  }
+
+  @Test
+  public void getTracer_fromConfigurationFile() throws IOException {
+    Properties props = new Properties();
+    props.setProperty(TracerParameters.APPLICATION, "test-app");
+    props.setProperty(TracerParameters.SERVICE, "test-service");
+    props.setProperty(TracerParameters.REPORTING_MECHANISM, "direct");
+    props.setProperty(TracerParameters.SERVER, "test-server");
+    props.setProperty(TracerParameters.TOKEN, "test-token");
+    configurationFile = savePropertiesToTempFile(props);
+    System.setProperty(Configuration.CONFIGURATION_FILE_KEY, configurationFile.getAbsolutePath());
+
+    tracer = new WavefrontTracerFactory().getTracer();
+    assertTrue(tracer instanceof WavefrontTracer);
+  }
+
+  @Test
+  public void getTracer_fromSystemProperties() {
+    System.setProperty(TracerParameters.APPLICATION, "test-app");
+    System.setProperty(TracerParameters.SERVICE, "test-service");
+    System.setProperty(TracerParameters.REPORTING_MECHANISM, "direct");
+    System.setProperty(TracerParameters.SERVER, "test-server");
+    System.setProperty(TracerParameters.TOKEN, "test-token");
+
+    tracer = new WavefrontTracerFactory().getTracer();
+    assertTrue(tracer instanceof WavefrontTracer);
   }
 }
