@@ -27,15 +27,12 @@ public class Utils {
       try (FileOutputStream stream = new FileOutputStream(file)) {
         props.store(stream, "");
       }
-
     } catch (Exception e) {
       if (file != null) {
         file.delete();
       }
-
       throw e;
     }
-
     return file;
   }
 
@@ -48,10 +45,8 @@ public class Utils {
       if (file != null) {
         file.delete();
       }
-
       throw e;
     }
-
     return file;
   }
 
@@ -64,10 +59,8 @@ public class Utils {
       if (file != null) {
         file.delete();
       }
-
       throw e;
     }
-
     return file;
   }
 }
