@@ -4,7 +4,7 @@ The Wavefront OpenTracing Bundle builds a fat-jar containing the [Wavefront by V
  SDK](https://github.com/wavefrontHQ/wavefront-opentracing-sdk-java) and a `TracerFactory` 
  implementation.
 
-It can be configured via a `tracer.properties` configuration file:
+Tracer parameters can be configured via a `tracer.properties` configuration file:
 
 ```properties
 # Required application tags
@@ -36,10 +36,10 @@ java -cp:$MYCLASSPATH:wavefront-opentracing-bundle-java.jar \
     com.mycompany.MyOtherService
 ```
 
-Parameters can also be configured via YAML files. Two YAML files would be needed: one to 
+Parameters can also be configured via YAML files. Two YAML files would be needed -- one to 
 [configure application tags](https://github.com/wavefrontHQ/wavefront-jersey-sdk-java#1-configure-application-tags) 
 and one to [configure Wavefront reporting](https://github.com/wavefrontHQ/wavefront-jersey-sdk-java#2-configure-wavefront-reporting). 
-The paths to these YAML files should be specified in `tracer.properties` or as System properties:
+The paths of these YAML files should be specified in `tracer.properties` or as System properties:
 
 ```bash
 java -cp:$MYCLASSPATH:wavefront-opentracing-bundle-java.jar \
@@ -61,7 +61,7 @@ Wavefront Tracer parameters use the prefix `wf.`:
 | `wf.cluster`                  | Name of a group of related hosts that serves as a cluster or region in which the application will run. |
 | `wf.shard`                    | Name of a subgroup of hosts within a cluster. |
 | `wf.customTags`               | Tags specific to your application, formatted as a delimited string of key-values. Ex: `tagKey1,tagVal1,tagKey2,tagVal2` |
-| `wf.customTagsDelimiter`      | Delimiter for wf.customTags. Default is `,` |
+| `wf.customTagsDelimiter`      | Delimiter for `wf.customTags`. Default is `,` |
 | `wf.reportingMechanism`       | `direct` or `proxy`. Sending data directly to Wavefront is the simplest way to get up and running quickly, whereas using a Wavefront proxy is the recommended choice for a large-scale deployment. |
 | `wf.server`                   | URL for your Wavefront instance, typically `https://myCompany.wavefront.com` |
 | `wf.token`                    | String produced by [obtaining an API token](https://docs.wavefront.com/wavefront_api.html#generating-an-api-token). You must have Direct Data Ingestion permission when you obtain the token. |
