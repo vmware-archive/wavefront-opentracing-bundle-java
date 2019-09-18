@@ -3,9 +3,9 @@ package com.wavefront.opentracing;
 import com.wavefront.config.ApplicationTagsConfig;
 import com.wavefront.config.WavefrontReportingConfig;
 import io.opentracing.Tracer;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,8 +17,8 @@ import static com.wavefront.opentracing.TracerParameters.APP_TAGS_YAML_FILE;
 import static com.wavefront.opentracing.TracerParameters.REPORTING_YAML_FILE;
 import static com.wavefront.opentracing.Utils.savePropertiesToTempFile;
 import static com.wavefront.opentracing.Utils.saveToTempYamlFile;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for {@link WavefrontTracerFactory}.
@@ -31,7 +31,7 @@ public class WavefrontTracerFactoryTest {
   private File applicationTagsYamlFile;
   private File wfReportingConfigYamlFile;
 
-  @BeforeEach
+  @Before
   public void beforeTest() {
     // Clear all the parameters.
     System.clearProperty(Configuration.CONFIGURATION_FILE_KEY);
@@ -40,10 +40,10 @@ public class WavefrontTracerFactoryTest {
     }
   }
 
-  @AfterEach
+  @After
   public void afterTest() {
     if (tracer != null) {
-      ((WavefrontTracer) tracer).close();
+      tracer.close();
       tracer = null;
     }
     if (configurationFile != null) {

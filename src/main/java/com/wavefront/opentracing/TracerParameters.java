@@ -1,5 +1,6 @@
 package com.wavefront.opentracing;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -30,6 +31,7 @@ public final class TracerParameters {
   public final static String CLUSTER = "wf.cluster";
   public final static String SHARD = "wf.shard";
   public final static String CUSTOM_TAGS = "wf.customTags";
+  public final static String CUSTOM_TAGS_FROM_ENV = "wf.customTagsFromEnv";
   public final static String CUSTOM_TAGS_DELIMITER = "wf.customTagsDelimiter";
 
   // Reporting parameters
@@ -50,6 +52,7 @@ public final class TracerParameters {
       CLUSTER,
       SHARD,
       CUSTOM_TAGS,
+      CUSTOM_TAGS_FROM_ENV,
       CUSTOM_TAGS_DELIMITER,
       REPORTING_MECHANISM,
       SERVER,
@@ -104,18 +107,53 @@ public final class TracerParameters {
     return integer;
   }
 
-  static Map<String, String> toCustomTags(String value, String delimiter) {
-    String[] components = value.split(delimiter);
-    if (components.length % 2 == 0) {
-      Map<String, String> customTags = new HashMap<>();
-      for (int i = 0; i < components.length; i += 2) {
-        customTags.put(components[i], components[i + 1]);
-      }
-      return customTags;
-    } else {
-      logger.log(Level.WARNING, "Failed to convert Tracer parameter value '" + value +
-          "' to custom tags -- key exists without value");
+  @Nullable
+  static Map<String, String> toCustomTags(Map<String, String> params) {
+    if (!params.containsKey(CUSTOM_TAGS) && !params.containsKey(CUSTOM_TAGS_FROM_ENV)) {
       return null;
     }
+
+    Map<String, String> customTags = new HashMap<>();
+    String delimiter = params.get(CUSTOM_TAGS_DELIMITER);
+    if (params.containsKey(CUSTOM_TAGS)) {
+      // ex: "tagKey1,tagVal1,tagKey2,tagVal2"
+      String value = params.get(CUSTOM_TAGS);
+      String[] components = value.split(delimiter);
+      if (components.length % 2 == 0) {
+        for (int i = 0; i < components.length; i += 2) {
+          String tagKey = components[i];
+          String tagVal = components[i + 1];
+          if (!tagKey.isEmpty() && !tagVal.isEmpty()) {
+            customTags.put(tagKey, tagVal);
+          }
+        }
+      } else {
+        logger.log(Level.WARNING, "Failed to convert Tracer parameter value '" + value +
+            "' to custom tags -- key exists without value");
+      }
+    }
+    if (params.containsKey(CUSTOM_TAGS_FROM_ENV)) {
+      // ex: "envVarName1,tagKey1,envVarName2,tagKey2"
+      String value = params.get(CUSTOM_TAGS_FROM_ENV);
+      String[] components = value.split(delimiter);
+      if (components.length % 2 == 0) {
+        for (int i = 0; i < components.length; i += 2) {
+          String tagKey = components[i + 1];
+          String tagVal = getEnvVariable(components[i]);
+          if (!tagKey.isEmpty() && tagVal != null && !tagVal.isEmpty()) {
+            customTags.put(tagKey, tagVal);
+          }
+        }
+      } else {
+        logger.log(Level.WARNING, "Failed to convert Tracer parameter value '" + value +
+            "' to custom tags from environment -- key exists without value");
+      }
+    }
+    return customTags;
+  }
+
+  @Nullable
+  static String getEnvVariable(String name) {
+    return System.getenv(name);
   }
 }
