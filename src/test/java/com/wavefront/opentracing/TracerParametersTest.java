@@ -1,16 +1,19 @@
 package com.wavefront.opentracing;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.contrib.java.lang.system.EnvironmentVariables;
 
 import java.io.File;
 import java.util.Map;
 import java.util.Properties;
 
+import static com.wavefront.opentracing.TracerParameters.getParameters;
 import static com.wavefront.opentracing.TracerParameters.toCustomTags;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  * Tests for {@link TracerParameters}.
@@ -26,6 +29,7 @@ public class TracerParametersTest {
   public final static String CLUSTER = "cluster";
   public final static String SHARD = "shard";
   public final static String CUSTOM_TAGS = "env|prod";
+  public final static String CUSTOM_TAGS_FROM_ENV = "location|loc";
   public final static String CUSTOM_TAGS_DELIMITER = "|";
 
   public final static String REPORTING_MECHANISM = "direct";
@@ -37,7 +41,10 @@ public class TracerParametersTest {
   public final static String PROXY_TRACING_PORT = "30000";
   public final static String SOURCE = "source";
 
-  @BeforeEach
+  @Rule
+  public final EnvironmentVariables environmentVariables = new EnvironmentVariables();
+
+  @Before
   public void beforeTest() {
     // Clear all the parameters.
     System.clearProperty(Configuration.CONFIGURATION_FILE_KEY);
@@ -56,6 +63,7 @@ public class TracerParametersTest {
     System.setProperty(TracerParameters.CLUSTER, CLUSTER);
     System.setProperty(TracerParameters.SHARD, SHARD);
     System.setProperty(TracerParameters.CUSTOM_TAGS, CUSTOM_TAGS);
+    System.setProperty(TracerParameters.CUSTOM_TAGS_FROM_ENV, CUSTOM_TAGS_FROM_ENV);
     System.setProperty(TracerParameters.CUSTOM_TAGS_DELIMITER, CUSTOM_TAGS_DELIMITER);
 
     System.setProperty(TracerParameters.REPORTING_MECHANISM, REPORTING_MECHANISM);
@@ -67,7 +75,7 @@ public class TracerParametersTest {
     System.setProperty(TracerParameters.PROXY_TRACING_PORT, PROXY_TRACING_PORT);
     System.setProperty(TracerParameters.SOURCE, SOURCE);
 
-    assertValidParameters(TracerParameters.getParameters());
+    assertValidParameters(getParameters());
   }
 
   @Test
@@ -81,6 +89,7 @@ public class TracerParametersTest {
     props.setProperty(TracerParameters.CLUSTER, CLUSTER);
     props.setProperty(TracerParameters.SHARD, SHARD);
     props.setProperty(TracerParameters.CUSTOM_TAGS, CUSTOM_TAGS);
+    props.setProperty(TracerParameters.CUSTOM_TAGS_FROM_ENV, CUSTOM_TAGS_FROM_ENV);
     props.setProperty(TracerParameters.CUSTOM_TAGS_DELIMITER, CUSTOM_TAGS_DELIMITER);
 
     props.setProperty(TracerParameters.REPORTING_MECHANISM, REPORTING_MECHANISM);
@@ -97,7 +106,7 @@ public class TracerParametersTest {
       file = Utils.savePropertiesToTempFile(props);
       System.setProperty(Configuration.CONFIGURATION_FILE_KEY, file.getAbsolutePath());
 
-      assertValidParameters(TracerParameters.getParameters());
+      assertValidParameters(getParameters());
     } finally {
       if (file != null) {
         file.delete();
@@ -107,9 +116,9 @@ public class TracerParametersTest {
 
   @Test
   public void testToCustomTags() {
-    String value = "env,prod,location,SF";
-    String delimiter = ",";
-    Map<String, String> customTags = toCustomTags(value, delimiter);
+    System.setProperty(TracerParameters.CUSTOM_TAGS, "env,prod,id,,location,SF");
+    System.setProperty(TracerParameters.CUSTOM_TAGS_DELIMITER, ",");
+    Map<String, String> customTags = toCustomTags(getParameters());
     assertNotNull(customTags);
     assertEquals(2, customTags.size());
     assertEquals("prod", customTags.get("env"));
@@ -117,11 +126,30 @@ public class TracerParametersTest {
   }
 
   @Test
-  public void testToCustomTags_InvalidValue() {
-    String value = "env,prod,location";
-    String delimiter = ",";
-    Map<String, String> customTags = toCustomTags(value, delimiter);
+  public void testToCustomTags_NoProperty() {
+    Map<String, String> customTags = toCustomTags(getParameters());
     assertNull(customTags);
+  }
+
+  @Test
+  public void testToCustomTags_InvalidValue() {
+    System.setProperty(TracerParameters.CUSTOM_TAGS, "env,prod,id");
+    System.setProperty(TracerParameters.CUSTOM_TAGS_DELIMITER, ",");
+    Map<String, String> customTags = toCustomTags(getParameters());
+    assertNotNull(customTags);
+    assertEquals(0, customTags.size());
+  }
+
+  @Test
+  public void testToCustomTags_FromEnv() {
+    System.setProperty(TracerParameters.CUSTOM_TAGS_FROM_ENV, "env,env,id,id,location,loc");
+    environmentVariables.set("env", "dev");
+    environmentVariables.set("location", "PA");
+    Map<String, String> customTags = toCustomTags(getParameters());
+    assertNotNull(customTags);
+    assertEquals(2, customTags.size());
+    assertEquals("dev", customTags.get("env"));
+    assertEquals("PA", customTags.get("loc"));
   }
 
   private static void assertValidParameters(Map<String, String> params) {
@@ -135,6 +163,7 @@ public class TracerParametersTest {
     assertEquals(CLUSTER, params.get(TracerParameters.CLUSTER));
     assertEquals(SHARD, params.get(TracerParameters.SHARD));
     assertEquals(CUSTOM_TAGS, params.get(TracerParameters.CUSTOM_TAGS));
+    assertEquals(CUSTOM_TAGS_FROM_ENV, params.get(TracerParameters.CUSTOM_TAGS_FROM_ENV));
     assertEquals(CUSTOM_TAGS_DELIMITER, params.get(TracerParameters.CUSTOM_TAGS_DELIMITER));
 
     assertEquals(REPORTING_MECHANISM, params.get(TracerParameters.REPORTING_MECHANISM));

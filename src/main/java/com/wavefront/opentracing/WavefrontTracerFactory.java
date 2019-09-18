@@ -22,8 +22,6 @@ import static com.wavefront.config.ReportingUtils.constructWavefrontSender;
 import static com.wavefront.opentracing.TracerParameters.APPLICATION;
 import static com.wavefront.opentracing.TracerParameters.APP_TAGS_YAML_FILE;
 import static com.wavefront.opentracing.TracerParameters.CLUSTER;
-import static com.wavefront.opentracing.TracerParameters.CUSTOM_TAGS;
-import static com.wavefront.opentracing.TracerParameters.CUSTOM_TAGS_DELIMITER;
 import static com.wavefront.opentracing.TracerParameters.PROXY_DISTRIBUTIONS_PORT;
 import static com.wavefront.opentracing.TracerParameters.PROXY_HOST;
 import static com.wavefront.opentracing.TracerParameters.PROXY_METRICS_PORT;
@@ -76,12 +74,9 @@ public class WavefrontTracerFactory implements TracerFactory {
     if (params.containsKey(SHARD)) {
       applicationTagsConfig.setShard(params.get(SHARD));
     }
-    if (params.containsKey(CUSTOM_TAGS)) {
-      Map<String, String> customTags = toCustomTags(params.get(CUSTOM_TAGS),
-          params.get(CUSTOM_TAGS_DELIMITER));
-      if (customTags != null) {
-        applicationTagsConfig.setCustomTags(customTags);
-      }
+    Map<String, String> customTags = toCustomTags(params);
+    if (customTags != null) {
+      applicationTagsConfig.setCustomTags(customTags);
     }
 
     ApplicationTags applicationTags = constructApplicationTags(applicationTagsConfig);
