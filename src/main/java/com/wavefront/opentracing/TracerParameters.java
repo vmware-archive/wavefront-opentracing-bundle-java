@@ -139,7 +139,7 @@ public final class TracerParameters {
       if (components.length % 2 == 0) {
         for (int i = 0; i < components.length; i += 2) {
           String tagKey = components[i + 1];
-          String tagVal = System.getenv(components[i]);
+          String tagVal = getEnvVariable(components[i]);
           if (!tagKey.isEmpty() && tagVal != null && !tagVal.isEmpty()) {
             customTags.put(tagKey, tagVal);
           }
@@ -150,5 +150,10 @@ public final class TracerParameters {
       }
     }
     return customTags;
+  }
+
+  @Nullable
+  static String getEnvVariable(String name) {
+    return System.getenv(name);
   }
 }

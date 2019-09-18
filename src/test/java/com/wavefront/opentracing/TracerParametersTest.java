@@ -1,9 +1,10 @@
 package com.wavefront.opentracing;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.contrib.java.lang.system.EnvironmentVariables;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
 import java.util.Map;
@@ -11,15 +12,21 @@ import java.util.Properties;
 
 import static com.wavefront.opentracing.TracerParameters.getParameters;
 import static com.wavefront.opentracing.TracerParameters.toCustomTags;
+import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.powermock.api.easymock.PowerMock.mockStaticPartial;
+import static org.powermock.api.easymock.PowerMock.replay;
+import static org.powermock.api.easymock.PowerMock.verify;
 
 /**
  * Tests for {@link TracerParameters}.
  *
  * @author Han Zhang (zhanghan@vmware.com)
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(TracerParameters.class)
 public class TracerParametersTest {
   private final static String APP_TAGS_YAML_FILE = "/etc/application-tags.yaml";
   private final static String REPORTING_YAML_FILE = "/etc/wf-reporting-config.yaml";
@@ -40,9 +47,6 @@ public class TracerParametersTest {
   public final static String PROXY_DISTRIBUTIONS_PORT = "40000";
   public final static String PROXY_TRACING_PORT = "30000";
   public final static String SOURCE = "source";
-
-  @Rule
-  public final EnvironmentVariables environmentVariables = new EnvironmentVariables();
 
   @Before
   public void beforeTest() {
@@ -143,9 +147,13 @@ public class TracerParametersTest {
   @Test
   public void testToCustomTags_FromEnv() {
     System.setProperty(TracerParameters.CUSTOM_TAGS_FROM_ENV, "env,env,id,id,location,loc");
-    environmentVariables.set("env", "dev");
-    environmentVariables.set("location", "PA");
+    mockStaticPartial(TracerParameters.class, "getEnvVariable");
+    expect(TracerParameters.getEnvVariable("env")).andReturn("dev");
+    expect(TracerParameters.getEnvVariable("id")).andReturn(null);
+    expect(TracerParameters.getEnvVariable("location")).andReturn("PA");
+    replay(TracerParameters.class);
     Map<String, String> customTags = toCustomTags(getParameters());
+    verify(TracerParameters.class);
     assertNotNull(customTags);
     assertEquals(2, customTags.size());
     assertEquals("dev", customTags.get("env"));
