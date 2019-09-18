@@ -1,5 +1,6 @@
 package com.wavefront.opentracing;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -106,6 +107,7 @@ public final class TracerParameters {
     return integer;
   }
 
+  @Nullable
   static Map<String, String> toCustomTags(Map<String, String> params) {
     if (!params.containsKey(CUSTOM_TAGS) && !params.containsKey(CUSTOM_TAGS_FROM_ENV)) {
       return null;
