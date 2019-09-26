@@ -82,7 +82,7 @@ Wavefront OpenTracing Bundle can be attached as a Tracer Plugin to the SpecialAg
 To do so, add the `-Dsa.tracer=${TRACER_JAR}` property to specify the JAR path of the bundle:
 
 ```bash
-java -javaagent:opentracing-specialagent-1.3.6.jar \
+java -javaagent:opentracing-specialagent-1.4.0.jar \
     -Dsa.tracer=wavefront-opentracing-bundle-java-SNAPSHOT.jar \
     -Dwf.service=myService \
     -jar MyService.jar
