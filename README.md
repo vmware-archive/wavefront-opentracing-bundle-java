@@ -61,6 +61,7 @@ Wavefront Tracer parameters use the prefix `wf.`:
 | `wf.cluster`                  | Name of a group of related hosts that serves as a cluster or region in which the application will run. |
 | `wf.shard`                    | Name of a subgroup of hosts within a cluster. |
 | `wf.customTags`               | Tags specific to your application, formatted as a delimited string of key-values. Ex: `tagKey1,tagVal1,tagKey2,tagVal2` |
+| `wf.customTagsFromEnv`        | Environment variables to load as tags, formatted as a delimited string of environment variable names to load values from and tag keys to map to. Ex: `envVarName1,tagKey1,envVarName2,tagKey2` |
 | `wf.customTagsDelimiter`      | Delimiter for `wf.customTags`. Default is `,` |
 | `wf.reportingMechanism`       | `direct` or `proxy`. Sending data directly to Wavefront is the simplest way to get up and running quickly, whereas using a Wavefront proxy is the recommended choice for a large-scale deployment. |
 | `wf.server`                   | URL for your Wavefront instance, typically `https://myCompany.wavefront.com` |
@@ -81,7 +82,7 @@ Wavefront OpenTracing Bundle can be attached as a Tracer Plugin to the SpecialAg
 To do so, add the `-Dsa.tracer=${TRACER_JAR}` property to specify the JAR path of the bundle:
 
 ```bash
-java -javaagent:opentracing-specialagent-1.3.6.jar \
+java -javaagent:opentracing-specialagent-1.4.0.jar \
     -Dsa.tracer=wavefront-opentracing-bundle-java-SNAPSHOT.jar \
     -Dwf.service=myService \
     -jar MyService.jar
