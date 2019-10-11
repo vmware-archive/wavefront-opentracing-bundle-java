@@ -83,7 +83,18 @@ To do so, add the `-Dsa.tracer=${TRACER_JAR}` property to specify the JAR path o
 
 ```bash
 java -javaagent:opentracing-specialagent-1.4.0.jar \
-    -Dsa.tracer=wavefront-opentracing-bundle-java-SNAPSHOT.jar \
+    -Dsa.tracer=wavefront-opentracing-bundle-java-0.9.0.jar \
+    -Dwf.service=myService \
+    -jar MyService.jar
+```
+
+Starting with `v1.4.1` of the SpecialAgent, the Wavefront OpenTracing Bundle comes packaged with
+the SpecialAgent so you no longer need the standalone bundle JAR. To send traces to Wavefront,
+add `-Dsa.tracer=wavefront`:
+
+```bash
+java -javaagent:opentracing-specialagent-1.4.1.jar \
+    -Dsa.tracer=wavefront \
     -Dwf.service=myService \
     -jar MyService.jar
 ```
