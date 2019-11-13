@@ -49,6 +49,7 @@
             <groupId>io.opentracing.contrib</groupId>
             <artifactId>opentracing-tracerresolver</artifactId>
             <version>0.1.8</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.wavefront</groupId>
