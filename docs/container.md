@@ -20,7 +20,9 @@ ENTRYPOINT /bin/bash run.sh
 And the contents of `run.sh`:
 ```
 #!/bin/bash
-java -jar /app/my-java-application.jar
+
+export JAVA_ARGS="-Xmx4G"
+java $JAVA_ARGS -jar /app/my-java-application.jar
 ```
 
 Follow the steps below to instrument the container.
@@ -52,7 +54,10 @@ Edit the `run.sh` file as follows:
 
 ```
 #!/bin/bash
-java -javaagent:/app/opentracing-specialagent-1.5.1.jar \
+
+export JAVA_ARGS="-Xmx4G"
+java $JAVA_ARGS \
+    -javaagent:/app/opentracing-specialagent-1.5.1.jar \
     -Dsa.tracer=wavefront \
     -Dwf.application=myApplication \
     -Dwf.service=myService \
