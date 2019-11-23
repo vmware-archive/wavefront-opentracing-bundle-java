@@ -41,7 +41,7 @@ COPY target/my-java-application.jar /app/my-java-application.jar
 # Install wget
 RUN apt-get-install -y wget
 
-# Download the latest stable release of the special agent as per https://github.com/opentracing-contrib/java-specialagent
+# Download the latest stable release of the Special Agent as per https://github.com/opentracing-contrib/java-specialagent
 wget -O /app/opentracing-specialagent-1.5.1.jar "http://central.maven.org/maven2/io/opentracing/contrib/specialagent/opentracing-specialagent/1.5.1/opentracing-specialagent-1.5.1.jar"
 
 ENTRYPOINT /bin/bash run.sh
