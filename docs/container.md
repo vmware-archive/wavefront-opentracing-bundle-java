@@ -66,4 +66,4 @@ java $JAVA_ARGS \
     -Dwf.token=<YOUR_WAVEFRONT_TOKEN> \
     -jar /app/my-java-application.jar
 ```
-Refer to the [documentation](https://github.com/wavefrontHQ/wavefront-opentracing-bundle-java#parameters) for all the parameters supported by the Wavefront tracer.
+For more information on all the parameters supported by the Wavefront tracer, see [documentation](https://github.com/wavefrontHQ/wavefront-opentracing-bundle-java#parameters).
