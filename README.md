@@ -15,7 +15,7 @@ The Wavefront Java Tracing Agent provides application observability without havi
 
 The Wavefront Java Tracing Agent includes:
 * The [Java OpenTracing SpecialAgent](https://github.com/opentracing-contrib/java-specialagent), which automatically instruments Java applications with traces.
-* The Wavefront OpenTracing bundle that is implemented in this repository, which sends the tracing data to Wavefront for observability.
+* The Wavefront OpenTracing Bundle that is implemented in this repository, which sends the tracing data to Wavefront for observability.
  
 ## Prerequisites
 
