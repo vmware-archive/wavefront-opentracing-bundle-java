@@ -27,58 +27,58 @@ The Wavefront Java Tracing Agent includes:
 Follow the steps given below:
 
 1. You can configure the [Tracer parameters](#Parameters) using any of the following methods.
-  * Create a file named `tracer.properties` in the application's directory and use the following template to configure the properties.
+    * Create a file named `tracer.properties` in the application's directory and use the following template to configure the properties.
 
-    This file is used to configure your Wavefront Tracer instance for reporting and to configure tags specific to the application.
-  
-    Example:
-    ```properties
-    # Required application tags
-    wf.application=myApp
-    wf.service=myService
+      This file is used to configure your Wavefront Tracer instance for reporting and to configure tags specific to the application.
 
-    # Optional application tags
-    wf.cluster=us-west
-    wf.shard=primary
+      Example:
+      ```properties
+      # Required application tags
+      wf.application=myApp
+      wf.service=myService
 
-    # Reporting through direct ingestion
-    wf.reportingMechanism=direct
-    wf.server=<replace-with-wavefront-url>
-    wf.token=<replace-with-wavefront-api-token>
+      # Optional application tags
+      wf.cluster=us-west
+      wf.shard=primary
 
-    # Reporting with a Wavefront proxy
-    #wf.reportingMechanism=proxy
-    #wf.proxyHost=<replace-with-wavefront-proxy-hostname>
-    #wf.proxyMetricsPort=2878
-    #wf.proxyDistributionsPort=2878
-    #wf.proxyTracingPort=30000
-    ```
+      # Reporting through direct ingestion
+      wf.reportingMechanism=direct
+      wf.server=<replace-with-wavefront-url>
+      wf.token=<replace-with-wavefront-api-token>
 
-  * Configure the parameters by overriding the existing parameters using System properties.
+      # Reporting with a Wavefront proxy
+      #wf.reportingMechanism=proxy
+      #wf.proxyHost=<replace-with-wavefront-proxy-hostname>
+      #wf.proxyMetricsPort=2878
+      #wf.proxyDistributionsPort=2878
+      #wf.proxyTracingPort=30000
+      ```
 
-    Example:
-    ```bash
-    java -cp:$MYCLASSPATH:wavefront-opentracing-bundle-java.jar \
-        -Dwf.service=MyOtherService \
-        com.mycompany.MyOtherService
-    ```
+    * Configure the parameters by overriding the existing parameters using System properties.
 
-  * Configure the Tracer parameters via YAML files. You need two YAML files:
-    * One to 
-  [configure application tags](https://github.com/wavefrontHQ/wavefront-jersey-sdk-java#1-configure-application-tags).
-    * Another to [configure Wavefront reporting](https://github.com/wavefrontHQ/wavefront-jersey-sdk-java#2-configure-wavefront-reporting). 
+      Example:
+      ```bash
+      java -cp:$MYCLASSPATH:wavefront-opentracing-bundle-java.jar \
+          -Dwf.service=MyOtherService \
+          com.mycompany.MyOtherService
+      ```
 
-    The paths to these YAML files need be specified in `tracer.properties` or as System properties:
+    * Configure the Tracer parameters via YAML files. You need two YAML files:
+      * One to 
+    [configure application tags](https://github.com/wavefrontHQ/wavefront-jersey-sdk-java#1-configure-application-tags).
+      * Another to [configure Wavefront reporting](https://github.com/wavefrontHQ/wavefront-jersey-sdk-java#2-configure-wavefront-reporting). 
 
-    Example: Define the paths to the YAML files via System porperties.
-    ```bash
-    java -cp:$MYCLASSPATH:wavefront-opentracing-bundle-java.jar \
-        -Dwf.applicationTagsYamlFile=application-tags.yaml \
-        -Dwf.reportingConfigYamlFile=wf-reporting-config.yaml \
-        com.mycompany.MyService
-    ```
+      The paths to these YAML files need be specified in `tracer.properties` or as System properties:
 
-    **Note**: *The parameters configured via `tracer.properties` or System properties override the parameters configured via YAML files*.
+      Example: Define the paths to the YAML files via System porperties.
+      ```bash
+      java -cp:$MYCLASSPATH:wavefront-opentracing-bundle-java.jar \
+          -Dwf.applicationTagsYamlFile=application-tags.yaml \
+          -Dwf.reportingConfigYamlFile=wf-reporting-config.yaml \
+          com.mycompany.MyService
+      ```
+
+      **Note**: *The parameters configured via `tracer.properties` or System properties override the parameters configured via YAML files*.
 2.  Attach the Java OpenTracing SpecialAgent to your application and send traces to Wavefront by adding `-Dsa.tracer=wavefront`. For more information, see the [Java OpenTracing SpcielaAgent's documentation](https://github.com/opentracing-contrib/java-specialagent#22-usage).<br/> 
   
     **Note**: *The Wavefront OpenTracing Bundle is included with v1.4.1 and above of the Java OpenTracing SpecialAgent, so you no longer need the Wavefront OpenTracing Bundle JAR*.<br/>
