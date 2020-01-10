@@ -3,7 +3,7 @@
 Welcome to the Wavefront Java Tracing Agent! 
 
 * [Prerequisites](#Prerequisites)
-* [Configuring the Parameters](#Configuring-the-Parameters)
+* [Setup Steps](#Setup-Steps)
 * [Parameters](#Parameters)
 * [Instrumenting a Java Based Container](#Instrumenting-a-Java-Based-Container)
 
