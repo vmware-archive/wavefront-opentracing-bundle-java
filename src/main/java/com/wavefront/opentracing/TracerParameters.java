@@ -43,6 +43,7 @@ public final class TracerParameters {
   public final static String PROXY_DISTRIBUTIONS_PORT = "wf.proxyDistributionsPort";
   public final static String PROXY_TRACING_PORT = "wf.proxyTracingPort";
   public final static String SOURCE = "wf.source";
+  public final static String DISABLE_SPAN_LOG_REPORTING = "wf.disableSpanLogReporting";
 
   public final static String [] ALL = {
       APP_TAGS_YAML_FILE,
@@ -61,7 +62,8 @@ public final class TracerParameters {
       PROXY_METRICS_PORT,
       PROXY_DISTRIBUTIONS_PORT,
       PROXY_TRACING_PORT,
-      SOURCE
+      SOURCE,
+      DISABLE_SPAN_LOG_REPORTING
   };
 
   /**

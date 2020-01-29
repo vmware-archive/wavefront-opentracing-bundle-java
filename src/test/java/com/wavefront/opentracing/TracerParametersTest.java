@@ -31,22 +31,23 @@ public class TracerParametersTest {
   private final static String APP_TAGS_YAML_FILE = "/etc/application-tags.yaml";
   private final static String REPORTING_YAML_FILE = "/etc/wf-reporting-config.yaml";
 
-  public final static String APPLICATION = "application";
-  public final static String SERVICE = "service";
-  public final static String CLUSTER = "cluster";
-  public final static String SHARD = "shard";
-  public final static String CUSTOM_TAGS = "env|prod";
-  public final static String CUSTOM_TAGS_FROM_ENV = "location|loc";
-  public final static String CUSTOM_TAGS_DELIMITER = "|";
+  private final static String APPLICATION = "application";
+  private final static String SERVICE = "service";
+  private final static String CLUSTER = "cluster";
+  private final static String SHARD = "shard";
+  private final static String CUSTOM_TAGS = "env|prod";
+  private final static String CUSTOM_TAGS_FROM_ENV = "location|loc";
+  private final static String CUSTOM_TAGS_DELIMITER = "|";
 
-  public final static String REPORTING_MECHANISM = "direct";
-  public final static String SERVER = "server";
-  public final static String TOKEN = "token";
-  public final static String PROXY_HOST = "host";
-  public final static String PROXY_METRICS_PORT = "2878";
-  public final static String PROXY_DISTRIBUTIONS_PORT = "40000";
-  public final static String PROXY_TRACING_PORT = "30000";
-  public final static String SOURCE = "source";
+  private final static String REPORTING_MECHANISM = "direct";
+  private final static String SERVER = "server";
+  private final static String TOKEN = "token";
+  private final static String PROXY_HOST = "host";
+  private final static String PROXY_METRICS_PORT = "2878";
+  private final static String PROXY_DISTRIBUTIONS_PORT = "40000";
+  private final static String PROXY_TRACING_PORT = "30000";
+  private final static String SOURCE = "source";
+  private final static String DISABLE_SPAN_LOG_REPORTING = "false";
 
   @Before
   public void beforeTest() {
@@ -78,6 +79,7 @@ public class TracerParametersTest {
     System.setProperty(TracerParameters.PROXY_DISTRIBUTIONS_PORT, PROXY_DISTRIBUTIONS_PORT);
     System.setProperty(TracerParameters.PROXY_TRACING_PORT, PROXY_TRACING_PORT);
     System.setProperty(TracerParameters.SOURCE, SOURCE);
+    System.setProperty(TracerParameters.DISABLE_SPAN_LOG_REPORTING, DISABLE_SPAN_LOG_REPORTING);
 
     assertValidParameters(getParameters());
   }
@@ -104,6 +106,7 @@ public class TracerParametersTest {
     props.setProperty(TracerParameters.PROXY_DISTRIBUTIONS_PORT, PROXY_DISTRIBUTIONS_PORT);
     props.setProperty(TracerParameters.PROXY_TRACING_PORT, PROXY_TRACING_PORT);
     props.setProperty(TracerParameters.SOURCE, SOURCE);
+    props.setProperty(TracerParameters.DISABLE_SPAN_LOG_REPORTING, DISABLE_SPAN_LOG_REPORTING);
 
     File file = null;
     try {
@@ -182,5 +185,7 @@ public class TracerParametersTest {
     assertEquals(PROXY_DISTRIBUTIONS_PORT, params.get(TracerParameters.PROXY_DISTRIBUTIONS_PORT));
     assertEquals(PROXY_TRACING_PORT, params.get(TracerParameters.PROXY_TRACING_PORT));
     assertEquals(SOURCE, params.get(TracerParameters.SOURCE));
+    assertEquals(DISABLE_SPAN_LOG_REPORTING,
+        params.get(TracerParameters.DISABLE_SPAN_LOG_REPORTING));
   }
 }
