@@ -22,6 +22,7 @@ import static com.wavefront.config.ReportingUtils.constructWavefrontSender;
 import static com.wavefront.opentracing.TracerParameters.APPLICATION;
 import static com.wavefront.opentracing.TracerParameters.APP_TAGS_YAML_FILE;
 import static com.wavefront.opentracing.TracerParameters.CLUSTER;
+import static com.wavefront.opentracing.TracerParameters.DISABLE_SPAN_LOG_REPORTING;
 import static com.wavefront.opentracing.TracerParameters.PROXY_DISTRIBUTIONS_PORT;
 import static com.wavefront.opentracing.TracerParameters.PROXY_HOST;
 import static com.wavefront.opentracing.TracerParameters.PROXY_METRICS_PORT;
@@ -129,6 +130,11 @@ public class WavefrontTracerFactory implements TracerFactory {
 
     String source = wfReportingConfig.getSource();
 
+    boolean disableSpanLogReporting = false;
+    if (params.containsKey(DISABLE_SPAN_LOG_REPORTING)) {
+      disableSpanLogReporting = Boolean.parseBoolean(params.get(DISABLE_SPAN_LOG_REPORTING));
+    }
+
     // Step 3 - Create a WavefrontSender for sending data to Wavefront.
     WavefrontSender wavefrontSender;
     try {
@@ -141,8 +147,12 @@ public class WavefrontTracerFactory implements TracerFactory {
     // Step 4 - Create a WavefrontSpanReporter for reporting trace data.
     WavefrontSpanReporter wfSpanReporter;
     try {
-      wfSpanReporter =
-          new WavefrontSpanReporter.Builder().withSource(source).build(wavefrontSender);
+      WavefrontSpanReporter.Builder wfSpanReporterBuilder =
+          new WavefrontSpanReporter.Builder().withSource(source);
+      if (disableSpanLogReporting) {
+        wfSpanReporterBuilder.disableSpanLogReporting();
+      }
+      wfSpanReporter = wfSpanReporterBuilder.build(wavefrontSender);
     } catch (Exception e) {
       logger.log(Level.WARNING, "Failed to create a Wavefront span reporter: " + e);
       return null;

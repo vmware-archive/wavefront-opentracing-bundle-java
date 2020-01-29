@@ -112,6 +112,7 @@ Wavefront Tracer parameters use the prefix `wf.`:
 | `wf.proxyDistributionsPort`   | Proxy port to send histograms to. Recommended value is 2878. Must match the value set for `histogramDistListenerPorts=` in `wavefront.conf`. |
 | `wf.proxyTracingPort`         | Proxy port to send trace data to. Recommended value is 30000. Must match the value set for `traceListenerPorts=` in `wavefront.conf`. |
 | `wf.source`                   | String that represents where the data originates -- typically, the host name of the machine running the microservice. |
+| `wf.disableSpanLogReporting`  | Optional. If `true`, disable the reporting of span logs to Wavefront. |
 | `wf.applicationTagsYamlFile`  | Optional. Path of the [YAML file that configures application tags](https://github.com/wavefrontHQ/wavefront-jersey-sdk-java#1-configure-application-tags). |
 | `wf.reportingConfigYamlFile`  | Optional. Path of the [YAML file that configures Wavefront reporting](https://github.com/wavefrontHQ/wavefront-jersey-sdk-java#2-configure-wavefront-reporting). |
 
