@@ -24,7 +24,7 @@ The Wavefront Java Tracing Agent includes:
 > <b><i>Note</i></b>:
 > </br>
 >   * **This is the Wavefront by VMware Java Tracing Agent!**
->   If this SDK is not what you were looking for, see the [table](#wavefront-sdks) given below.
+>   If this is not what you were looking for, see the [table](#wavefront-sdks) given below.
 >   * Want to write code to instrument your application? Use the [Wavefront Java OpenTracing SDK](https://github.com/wavefrontHQ/wavefront-opentracing-sdk-java).
 >   * See <a href="https://docs.wavefront.com/tracing_instrumenting_frameworks.html">instrument your application for tracing</a> for more information.
 
