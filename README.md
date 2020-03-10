@@ -1,12 +1,12 @@
 # wavefront-opentracing-bundle-java
 
-Welcome to the Wavefront Java Tracing Agent! 
-
+## Table of Content
 * [Prerequisites](#Prerequisites)
 * [Setup Steps](#Setup-Steps)
 * [Parameters](#Parameters)
 * [Instrumenting a Java Based Container](#Instrumenting-a-Java-Based-Container)
 
+# Welcome to the Wavefront Java Tracing Agent
 The Wavefront Java Tracing Agent provides application observability without having to do any code changes.
 
 <p align="left">
@@ -16,6 +16,109 @@ The Wavefront Java Tracing Agent provides application observability without havi
 The Wavefront Java Tracing Agent includes:
 * The [Java OpenTracing SpecialAgent](https://github.com/opentracing-contrib/java-specialagent), which automatically instruments Java applications with traces.
 * The Wavefront OpenTracing Bundle that is implemented in this repository, which sends the tracing data to Wavefront for observability.
+
+**Before you start implementing, let us make sure you are using the correct SDK!**
+
+![Java Tracing Agent Decision Tree](docs/java_tracing_agent.png)
+
+> <b><i>Note</i></b>:
+> </br>
+>   * **This is the Wavefront by VMware Java Tracing Agent!**
+>   If this SDK is not what you were looking for, see the [table](#wavefront-sdks) given below.
+>   * Want to write code to instrument your application? Use the [Wavefront Java OpenTracing SDK](https://github.com/wavefrontHQ/wavefront-opentracing-sdk-java).
+>   * See <a href="https://docs.wavefront.com/tracing_instrumenting_frameworks.html">instrument your application for tracing</a> for more information.
+
+#### Wavefront SDKs
+<table id="SDKlevels" style="width: 100%">
+<tr>
+  <th width="10%">SDK Type</th>
+  <th width="45%">SDK Description</th>
+  <th width="45%">Supported Languages</th>
+</tr>
+
+<tr>
+  <td><a href="https://docs.wavefront.com/wavefront_sdks.html#sdks-for-collecting-trace-data">OpenTracing SDK</a></td>
+  <td align="justify">Implements the OpenTracing specification. Lets you define, collect, and report custom trace data from any part of your application code. <br>Automatically derives Rate Errors Duration (RED) metrics from the reported spans. </td>
+  <td>
+    <ul>
+    <li>
+      <b>Java</b>: <a href ="https://github.com/wavefrontHQ/wavefront-opentracing-sdk-java">OpenTracing SDK</a> <b>|</b> <a href ="https://github.com/wavefrontHQ/wavefront-opentracing-bundle-java">Tracing Agent</a>
+    </li>
+    <li>
+      <b>Python</b>: <a href ="https://github.com/wavefrontHQ/wavefront-opentracing-sdk-python">OpenTracing SDK</a>
+    </li>
+    <li>
+      <b>Go</b>: <a href ="https://github.com/wavefrontHQ/wavefront-opentracing-sdk-go">OpenTracing SDK</a>
+    </li>
+    <li>
+      <b>.Net/C#</b>: <a href ="https://github.com/wavefrontHQ/wavefront-opentracing-sdk-csharp">OpenTracing SDK</a>
+    </li>
+    </ul>
+  </td>
+</tr>
+
+<tr>
+  <td><a href="https://docs.wavefront.com/wavefront_sdks.html#sdks-for-collecting-metrics-and-histograms">Metrics SDK</a></td>
+  <td align="justify">Implements a standard metrics library. Lets you define, collect, and report custom business metrics and histograms from any part of your application code.   </td>
+  <td>
+    <ul>
+    <li>
+    <b>Java</b>: <a href ="https://github.com/wavefrontHQ/wavefront-dropwizard-metrics-sdk-java">Dropwizard</a> <b>|</b> <a href ="https://github.com/wavefrontHQ/wavefront-runtime-sdk-jvm">JVM</a>
+    </li>
+    <li>
+    <b>Python</b>: <a href ="https://github.com/wavefrontHQ/wavefront-pyformance">Pyformance SDK</a>
+    </li>
+    <li>
+      <b>Go</b>: <a href ="https://github.com/wavefrontHQ/go-metrics-wavefront">Go Metrics SDK</a>
+      </li>
+    <li>
+    <b>.Net/C#</b>: <a href ="https://github.com/wavefrontHQ/wavefront-appmetrics-sdk-csharp">App Metrics SDK</a>
+    </li>
+    </ul>
+  </td>
+</tr>
+
+<tr>
+  <td><a href="https://docs.wavefront.com/wavefront_sdks.html#sdks-that-instrument-frameworks">Framework SDK</a></td>
+  <td align="justify">Reports predefined traces, metrics, and histograms from the APIs of a supported app framework. Lets you get started quickly with minimal code changes.</td>
+  <td>
+    <ul>
+    <li><b>Java</b>:
+    <a href="https://github.com/wavefrontHQ/wavefront-dropwizard-sdk-java">Dropwizard</a> <b>|</b> <a href="https://github.com/wavefrontHQ/wavefront-gRPC-sdk-java">gRPC</a> <b>|</b> <a href="https://github.com/wavefrontHQ/wavefront-jaxrs-sdk-java">JAX-RS</a> <b>|</b> <a href="https://github.com/wavefrontHQ/wavefront-jersey-sdk-java">Jersey</a></li>
+    <li><b>.Net/C#</b>:
+    <a href="https://github.com/wavefrontHQ/wavefront-aspnetcore-sdk-csharp">ASP.Net core</a> </li>
+    <!--- [Python](wavefront_sdks_python.html#python-sdks-that-instrument-frameworks) --->
+    </ul>
+  </td>
+</tr>
+
+<tr>
+  <td><a href="https://docs.wavefront.com/wavefront_sdks.html#sdks-for-sending-raw-data-to-wavefront">Sender SDK</a></td>
+  <td align="justify">Lets you send raw values to Wavefront for storage as metrics, histograms, or traces, e.g., to import CSV data into Wavefront.
+  </td>
+  <td>
+    <ul>
+    <li>
+    <b>Java</b>: <a href ="https://github.com/wavefrontHQ/wavefront-sdk-java">Sender SDK</a>
+    </li>
+    <li>
+    <b>Python</b>: <a href ="https://github.com/wavefrontHQ/wavefront-sdk-python">Sender SDK</a>
+    </li>
+    <li>
+    <b>Go</b>: <a href ="https://github.com/wavefrontHQ/wavefront-sdk-go">Sender SDK</a>
+    </li>
+    <li>
+    <b>.Net/C#</b>: <a href ="https://github.com/wavefrontHQ/wavefront-sdk-csharp">Sender SDK</a>
+    </li>
+    <li>
+    <b>C++</b>: <a href ="https://github.com/wavefrontHQ/wavefront-sdk-cpp">Sender SDK</a>
+    </li>
+    </ul>
+  </td>
+</tr>
+
+</tbody>
+</table>
  
 ## Prerequisites
 
