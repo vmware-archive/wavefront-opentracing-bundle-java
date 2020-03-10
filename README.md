@@ -181,10 +181,10 @@ Follow the steps given below:
           com.mycompany.MyService
       ```
 
-      **Note**: *The parameters configured via `tracer.properties` or System properties override the parameters configured via YAML files*.
+      >**Note**: *The parameters configured via `tracer.properties` or System properties override the parameters configured via YAML files*.
 2.  Attach the Java OpenTracing SpecialAgent to your application and send traces to Wavefront by adding `-Dsa.tracer=wavefront`. For more information, see the [Java OpenTracing SpcielaAgent's documentation](https://github.com/opentracing-contrib/java-specialagent#22-usage).<br/> 
   
-    **Note**: *The Wavefront OpenTracing Bundle is included with v1.4.1 and above of the Java OpenTracing SpecialAgent, so you no longer need the Wavefront OpenTracing Bundle JAR*.<br/>
+    >**Note**: *The Wavefront OpenTracing Bundle is included with v1.4.1 and above of the Java OpenTracing SpecialAgent, so you no longer need the Wavefront OpenTracing Bundle JAR*.<br/>
 
     Example:
     ```bash
