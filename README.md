@@ -7,7 +7,7 @@
 * [Instrumenting a Java Based Container](#Instrumenting-a-Java-Based-Container)
 
 # Welcome to the Wavefront Java Tracing Agent
-The Wavefront Java Tracing Agent provides application observability without having to do any code changes.
+The Wavefront Java Tracing Agent provides application observability. No code changes are required.
 
 <p align="left">
   <img src="/docs/wavefront_java_tracing_agent.png">
@@ -15,7 +15,7 @@ The Wavefront Java Tracing Agent provides application observability without havi
 
 The Wavefront Java Tracing Agent includes:
 * The [Java OpenTracing SpecialAgent](https://github.com/opentracing-contrib/java-specialagent), which automatically instruments Java applications with traces.
-* The Wavefront OpenTracing Bundle that is implemented in this repository, which sends the tracing data to Wavefront for observability.
+* The Wavefront OpenTracing Bundle (implemented in this repository), which sends the tracing data to Wavefront.
 
 **Before you start implementing, let us make sure you are using the correct SDK!**
 
@@ -25,7 +25,7 @@ The Wavefront Java Tracing Agent includes:
 > </br>
 >   * **This is the Wavefront by VMware Java Tracing Agent!**
 >   If this is not what you were looking for, see the [table](#wavefront-sdks) given below.
->   * Want to write code to instrument your application? Use the [Wavefront Java OpenTracing SDK](https://github.com/wavefrontHQ/wavefront-opentracing-sdk-java).
+>   * Want control over instrumenting your code?  Use the [Wavefront Java OpenTracing SDK](https://github.com/wavefrontHQ/wavefront-opentracing-sdk-java).
 >   * See <a href="https://docs.wavefront.com/tracing_instrumenting_frameworks.html">instrument your application for tracing</a> for more information.
 
 #### Wavefront SDKs
@@ -157,7 +157,7 @@ Follow the steps given below:
       #wf.proxyTracingPort=30000
       ```
 
-    * Configure the parameters by overriding the existing parameters using System properties.
+    * Configure the parameters by overriding the existing parameters using system properties.
 
       Example:
       ```bash
@@ -171,9 +171,9 @@ Follow the steps given below:
     [configure application tags](https://github.com/wavefrontHQ/wavefront-jersey-sdk-java#1-configure-application-tags).
       * Another to [configure Wavefront reporting](https://github.com/wavefrontHQ/wavefront-jersey-sdk-java#2-configure-wavefront-reporting). 
 
-      The paths to these YAML files need be specified in `tracer.properties` or as System properties:
+      The paths to these YAML files need be specified in `tracer.properties` or as system properties:
 
-      Example: Define the paths to the YAML files via System porperties.
+      Example: Define the paths to the YAML files via System properties.
       ```bash
       java -cp:$MYCLASSPATH:wavefront-opentracing-bundle-java.jar \
           -Dwf.applicationTagsYamlFile=application-tags.yaml \
@@ -181,8 +181,8 @@ Follow the steps given below:
           com.mycompany.MyService
       ```
 
-      >**Note**: *The parameters configured via `tracer.properties` or System properties override the parameters configured via YAML files*.
-2.  Attach the Java OpenTracing SpecialAgent to your application and send traces to Wavefront by adding `-Dsa.tracer=wavefront`. For more information, see the [Java OpenTracing SpcielaAgent's documentation](https://github.com/opentracing-contrib/java-specialagent#22-usage).<br/> 
+      >**Note**: *The parameters configured via `tracer.properties` or system properties override the parameters configured via YAML files*.
+2.  Attach the Java OpenTracing SpecialAgent to your application and send traces to Wavefront by adding `-Dsa.tracer=wavefront`. For more information, see the [Java OpenTracing SpecialAgent's documentation](https://github.com/opentracing-contrib/java-specialagent#22-usage).<br/> 
   
     >**Note**: *The Wavefront OpenTracing Bundle is included with v1.4.1 and above of the Java OpenTracing SpecialAgent, so you no longer need the Wavefront OpenTracing Bundle JAR*.<br/>
 
