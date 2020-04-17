@@ -4,7 +4,7 @@
 
     <groupId>com.wavefront</groupId>
     <artifactId>wavefront-opentracing-bundle-java</artifactId>
-    <version>0.9.1-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Wavefront by VMware OpenTracing Bundle for Java</name>
@@ -54,7 +54,7 @@
         <dependency>
             <groupId>com.wavefront</groupId>
             <artifactId>wavefront-opentracing-sdk-java</artifactId>
-            <version>1.14</version>
+            <version>1.16</version>
             <scope>provided</scope>
         </dependency>
 
