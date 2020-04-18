@@ -1,8 +1,5 @@
 package com.wavefront.opentracing;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.fasterxml.jackson.dataformat.yaml.YAMLParser;
 import com.wavefront.config.ApplicationTagsConfig;
 import com.wavefront.config.WavefrontReportingConfig;
 import com.wavefront.opentracing.reporting.WavefrontSpanReporter;
@@ -11,12 +8,12 @@ import com.wavefront.sdk.common.application.ApplicationTags;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.tracerresolver.TracerFactory;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static com.wavefront.config.ReportingUtils.constructApplicationTags;
+import static com.wavefront.config.ReportingUtils.constructApplicationTagsConfig;
 import static com.wavefront.config.ReportingUtils.constructWavefrontReportingConfig;
 import static com.wavefront.config.ReportingUtils.constructWavefrontSender;
 import static com.wavefront.opentracing.TracerParameters.APPLICATION;
@@ -165,43 +162,5 @@ public class WavefrontTracerFactory implements TracerFactory {
       logger.log(Level.WARNING, "Failed to create a Wavefront Tracer: " + e);
       return null;
     }
-  }
-
-  // TODO: move to internal reporter
-  private static ApplicationTagsConfig constructApplicationTagsConfig(
-      String applicationTagsYamlFile) {
-    YAMLFactory factory = new YAMLFactory(new ObjectMapper());
-    YAMLParser parser;
-    try {
-      parser = factory.createParser(new File(applicationTagsYamlFile));
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-    try {
-      return parser.readValueAs(ApplicationTagsConfig.class);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  // TODO: move to internal reporter
-  private static ApplicationTags constructApplicationTags(
-      ApplicationTagsConfig applicationTagsConfig) {
-    ApplicationTags.Builder applicationTagsBuilder = new ApplicationTags.Builder(
-        applicationTagsConfig.getApplication(), applicationTagsConfig.getService());
-
-    if (applicationTagsConfig.getCluster() != null) {
-      applicationTagsBuilder.cluster(applicationTagsConfig.getCluster());
-    }
-
-    if (applicationTagsConfig.getShard() != null) {
-      applicationTagsBuilder.shard(applicationTagsConfig.getShard());
-    }
-
-    if (applicationTagsConfig.getCustomTags() != null) {
-      applicationTagsBuilder.customTags(applicationTagsConfig.getCustomTags());
-    }
-
-    return applicationTagsBuilder.build();
   }
 }
