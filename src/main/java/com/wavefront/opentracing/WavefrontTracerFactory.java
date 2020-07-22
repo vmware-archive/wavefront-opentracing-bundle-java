@@ -2,15 +2,21 @@ package com.wavefront.opentracing;
 
 import com.wavefront.config.ApplicationTagsConfig;
 import com.wavefront.config.WavefrontReportingConfig;
+import com.wavefront.internal.reporter.WavefrontInternalReporter;
+import com.wavefront.internal_reporter_java.io.dropwizard.metrics5.MetricName;
 import com.wavefront.opentracing.reporting.WavefrontSpanReporter;
+import com.wavefront.sdk.common.Utils;
 import com.wavefront.sdk.common.WavefrontSender;
 import com.wavefront.sdk.common.application.ApplicationTags;
-import io.opentracing.Tracer;
-import io.opentracing.contrib.tracerresolver.TracerFactory;
 
+import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import io.opentracing.Tracer;
+import io.opentracing.contrib.tracerresolver.TracerFactory;
 
 import static com.wavefront.config.ReportingUtils.constructApplicationTags;
 import static com.wavefront.config.ReportingUtils.constructApplicationTagsConfig;
@@ -33,6 +39,7 @@ import static com.wavefront.opentracing.TracerParameters.SOURCE;
 import static com.wavefront.opentracing.TracerParameters.TOKEN;
 import static com.wavefront.opentracing.TracerParameters.toCustomTags;
 import static com.wavefront.opentracing.TracerParameters.toInteger;
+import static com.wavefront.sdk.common.Constants.SDK_METRIC_PREFIX;
 
 /**
  * Implementation of {@link TracerFactory} that builds instances of {@link WavefrontTracer}.
@@ -140,6 +147,15 @@ public class WavefrontTracerFactory implements TracerFactory {
       logger.log(Level.WARNING, "Failed to create a Wavefront sender: " + e);
       return null;
     }
+
+    // Create an internal reporter for reporting internal sdk metrics.
+    WavefrontInternalReporter sdkMetricsReporter = new WavefrontInternalReporter.Builder().
+        prefixedWith(SDK_METRIC_PREFIX + ".opentracing_bundle").withSource(source).build
+        (wavefrontSender);
+    sdkMetricsReporter.start(1, TimeUnit.MINUTES);
+    double sdkVersion = Utils.getSemVer();
+    sdkMetricsReporter.newGauge(new MetricName("version", Collections.emptyMap()),
+        () -> (() -> sdkVersion));
 
     // Step 4 - Create a WavefrontSpanReporter for reporting trace data.
     WavefrontSpanReporter wfSpanReporter;
