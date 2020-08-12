@@ -18,6 +18,7 @@ ENTRYPOINT /bin/bash run.sh
 ```
 
 And the contents of `run.sh`:
+
 ```
 #!/bin/bash
 
@@ -29,6 +30,8 @@ Follow the steps below to instrument the container.
 
 
 ## 1. Edit the Dockerfile to Download the OpenTracing Special Agent JAR File
+
+The latest stable release can be found at [https://github.com/opentracing-contrib/java-specialagent#21-installation](https://github.com/opentracing-contrib/java-specialagent#21-installation).
 
 Edit the sample Dockerfile as follows:
 
@@ -44,7 +47,8 @@ COPY target/my-java-application.jar /app/my-java-application.jar
 RUN apt-get-install -y wget
 
 # Download the latest stable release of the Special Agent as per https://github.com/opentracing-contrib/java-specialagent
-wget -O /app/opentracing-specialagent-1.5.1.jar "http://central.maven.org/maven2/io/opentracing/contrib/specialagent/opentracing-specialagent/1.5.1/opentracing-specialagent-1.5.1.jar"
+RUN wget -O /app/opentracing-specialagent-1.7.4.jar "https://repo1.maven.org/maven2/io/opentracing/contrib/specialagent/opentracing-specialagent/1.7.4/opentracing-specialagent-1.7.4.jar"
+
 
 ENTRYPOINT /bin/bash run.sh
 ```
@@ -57,7 +61,7 @@ Edit the `run.sh` file as follows:
 
 export JAVA_ARGS="-Xmx4G"
 java $JAVA_ARGS \
-    -javaagent:/app/opentracing-specialagent-1.5.1.jar \
+    -javaagent:/app/opentracing-specialagent-1.7.4.jar \
     -Dsa.tracer=wavefront \
     -Dwf.application=myApplication \
     -Dwf.service=myService \
