@@ -153,7 +153,7 @@ public class WavefrontTracerFactory implements TracerFactory {
         prefixedWith(SDK_METRIC_PREFIX + ".opentracing_bundle").withSource(source).build
         (wavefrontSender);
     sdkMetricsReporter.start(1, TimeUnit.MINUTES);
-    double sdkVersion = Utils.getSemVer();
+    double sdkVersion = Utils.getSemVerGauge("wavefront-opentracing-bundle-java");
     sdkMetricsReporter.newGauge(new MetricName("version", Collections.emptyMap()),
         () -> (() -> sdkVersion));
 
