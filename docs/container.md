@@ -62,7 +62,7 @@ Edit the `run.sh` file as follows:
 export JAVA_ARGS="-Xmx4G"
 java $JAVA_ARGS \
     -javaagent:/app/opentracing-specialagent-1.7.4.jar \
-    -Dsa.tracer=wavefront \
+    -Dsa.exporter=wavefront \
     -Dwf.application=myApplication \
     -Dwf.service=myService \
     -Dwf.reportingMechanism=direct \
